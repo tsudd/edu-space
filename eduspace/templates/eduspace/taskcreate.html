@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Task creation</title>
+    </head>
+    <body>
+        <h1>Creating new task</h1>
+        <div>
+            <a href="{% url 'index' %}">Main</a>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </form>
+    </body>
+</html>

@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-Ahhhh shiiit here we go again....
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <h1>Subjects</h1>
+        {% for sub in subs %}
+        <div>
+            <h2><a href="{% url 'subject' sub.pk %}">{{ sub.name }}</a></h2>
+            <p>{{ sub.description }}</p>
+        </div>
+        {% endfor %}
+        <a href="{% url 'taskcreate' %}">Create task</a>
+    </body>
 </html>
