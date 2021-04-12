@@ -1,0 +1,7 @@
+{% autoescape off %}
+Dear, {{ user.username }}!
+You are about to change your password. To set new password, click on the link below:
+{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+
+Good luck!
+{% endautoescape %}

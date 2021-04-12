@@ -1,29 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>{{ sel_sub.name }}</title>
-    </head>
-    <body>
-        <table>
-            <tr>
-                <td>
-                    {% for sub in subs %}
-                    <div>
-                        <h2><a href="{% url 'subject' sub.pk %}">{{ sub.name }}</a></h2>
-                        <p>{{ sub.description }}</p>
-                    </div>
-                    {% endfor %}
-                </td>
-                <td>
-                    <h1>{{ sel_sub.name }}</h1>
-                    <h2>{{ sel_sub.description }}</h2>
-                    <p>{{ sel_sub.information }}</p>
-                </td>
-                <td>
-                    <a href="{% url 'taskcreate' %}">Create task</a>
-                </td>
-            </tr>
-        </table>
-    </body>
-</html>
+{% extends "eduspace/layout/main.html" %}
+
+{% block title %}
+{{ sel_sub.name }}
+{% endblock %}
+
+{% block content %}
+<h1>{{ sel_sub.name }}</h1>
+<h2>{{ sel_sub.description }}</h2>
+<p>{{ sel_sub.information }}</p>
+
+<a href="{% url 'taskcreate' %}">Create task</a>
+{% endblock %}

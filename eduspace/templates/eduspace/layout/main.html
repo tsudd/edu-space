@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" content="text/html; charset=utf-8">
+        <title>{% block title %} Main {% endblock %} - Eduspace</title>
+    </head>
+    <body>
+        <header><strong>Edu</strong><span>space</span></header>
+        <nav>
+            {% for sub in subs %}
+            <div>
+                <h2><a href="{% url 'subject' sub.pk %}">{{ sub.name }}</a></h2>
+                <p>{{ sub.description }}</p>
+            </div>
+            {% endfor %}
+            <a href="{% url 'taskcreate' %}">Create task</a>
+            <a href="{% url 'messagecreate' %}">Send message</a>
+        </nav>
+        <section>
+            {% block content %}
+            {% endblock %}
+        </section>
+    </body>
+</html>

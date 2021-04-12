@@ -1,11 +1,11 @@
 {% extends "eduspace/layout/create.html" %}
 
 {% block title%}
-Task creation
+Message sending
 {% endblock %}
 
 {% block content %}
-<h1>Create new task</h1>
+<h1>Create new message</h1>
 <div>
     <a href="{% url 'index' %}">Main</a>
 </div>
@@ -13,5 +13,5 @@ Task creation
     {% csrf_token %}
     {{ form.as_p }}
 </form>
-<input type="submit" value="Add">
+<input type="submit" value="Send">
 {% endblock %}

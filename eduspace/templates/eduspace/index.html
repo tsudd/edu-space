@@ -1,17 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Title</title>
-    </head>
-    <body>
-        <h1>Subjects</h1>
-        {% for sub in subs %}
-        <div>
-            <h2><a href="{% url 'subject' sub.pk %}">{{ sub.name }}</a></h2>
-            <p>{{ sub.description }}</p>
-        </div>
-        {% endfor %}
-        <a href="{% url 'taskcreate' %}">Create task</a>
-    </body>
-</html>
+{% extends "eduspace/layout/main.html" %}
+
+{% block content %}
+<div><h2>Hi,<span><strong>Student</strong></span>! Lets study today!</h2></div>
+{% endblock %}
