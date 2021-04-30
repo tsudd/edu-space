@@ -120,7 +120,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 LOGIN_URL = '/eduspace/login/'
-LOGIN_REDIRECT_URL = ''
+LOGIN_REDIRECT_URL = '/eduspace/'
 LOGOUT_REDIRECT_URL = '/eduspace/login/'
 
 AUTH_USER_MODEL = 'eduspace.Account'

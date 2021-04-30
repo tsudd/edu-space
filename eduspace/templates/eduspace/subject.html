@@ -9,5 +9,16 @@
 <h2>{{ sel_sub.description }}</h2>
 <p>{{ sel_sub.information }}</p>
 
-<a href="{% url 'taskcreate' %}">Create task</a>
+<h2>Tasks</h2>
+<div>
+    <hr>
+    {% for task in tasks %}
+    <div>
+        <h3><a href="{% url 'eduspace:task' task.pk %}">{{ task.name }}</a></h3>
+        <h4>{{ task.creation_date }}</h4>
+        <h5>{{ task.deadline }}</h5>
+        <hr>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

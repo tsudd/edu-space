@@ -1,0 +1,8 @@
+<nav>
+    <header><a href="{% url 'eduspace:index' %}"><strong>Edu</strong><span>space</span></a></header>
+    {% if user.is_staff %}
+    <a href="{% url 'eduspace:taskcreate' %}">Create task</a>
+    <a href="{% url 'eduspace:messagecreate' %}">Send message</a>
+    {% endif %}
+    <h3><a href="{% url 'eduspace:logout' %}">Log out</a></h3>
+</nav>

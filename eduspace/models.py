@@ -46,7 +46,7 @@ class Account(AbstractBaseUser):
 
     name = models.CharField("Name", max_length=30, default='UNNAMED USER', blank=True)
     surname = models.CharField("Surname", max_length=30, default='', blank=True)
-    birthDate = models.DateField(verbose_name="birth date")
+    birthDate = models.DateField(verbose_name="birth date", null=True, blank=True)
     name1 = models.CharField(max_length=30, default='', blank=True)
 
     USERNAME_FIELD = 'username'
@@ -77,7 +77,7 @@ class Teacher(models.Model):
     status = models.ForeignKey(TeacherStatus, on_delete=models.CASCADE, default=None, null=True, blank=True)
 
     def __str__(self):
-        return self.user.email
+        return self.user.name + ' ' + self.user.surname
 
 
 class Class(models.Model):
@@ -111,23 +111,12 @@ class Subject(models.Model):
 class Task(models.Model):
     name = models.CharField("Name", max_length=30)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, default=None)
-    description = models.CharField("Description", max_length=250)
-    creation_date = models.DateField('Creation date')
+    description = models.TextField("Description", max_length=250)
+    creation_date = models.DateField('Creation date', auto_now_add=True)
+    deadline = models.DateField("Deadline", null=True, blank=True)
 
     def __str__(self):
         return f"Task {self.name} {self.subject} {self.creation_date}."
-
-
-class TheoryTask(Task):
-    def __str__(self):
-        return f"TheoryTask from {super.__str__(self)}"
-
-
-class PracticeTask(Task):
-    deadline = models.DateField('Deadline')
-
-    def __str__(self):
-        return f"PracticeTask {self.name} in {self.subject}"
 
 
 class MessageType(models.Model):
@@ -141,8 +130,9 @@ class MessageType(models.Model):
 class Message(models.Model):
     class_receiver = models.ForeignKey(Class, on_delete=models.CASCADE, default=None)
     text = models.TextField(null=True, blank=True)
-    creation_date = models.DateField('Creation date')
+    creation_datetime = models.DateTimeField('Creation datetime', auto_now_add=True)
     type = models.ForeignKey(MessageType, on_delete=models.CASCADE, default=None, null=True, blank=True)
+    sender = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"Message for {self.class_receiver} from {self.creation_date} of {self.type}"
+        return f"Message for {self.class_receiver} from {self.creation_datetime} of {self.type}"

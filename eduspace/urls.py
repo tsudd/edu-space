@@ -2,24 +2,28 @@ from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, \
     PasswordResetView, PasswordResetConfirmView, PasswordResetCompleteView
 
-from .views import index, subject
-from .views import TheoryTaskCreateView
+from .views import index, subject, task, message_del
 from .views import MessageCreateView
+from .views import TaskCreateView
+
+app_name = 'eduspace'
 
 urlpatterns = [
+    path('task/<int:task_id>', task, name='task'),
     path("message/create/", MessageCreateView.as_view(), name="messagecreate"),
-    path("login/", LoginView.as_view(template_name="eduspace/login.html"), name="login"),
+    path("login/", LoginView.as_view(template_name="eduspace/registration/login.html"), name="login"),
     path("logout/", LogoutView.as_view(next_page='eduspace:login'), name="logout"),
-    path("password_change/", PasswordChangeView.as_view(template_name="eduspace/password_change.html"),
+    path("password_change/", PasswordChangeView.as_view(template_name="eduspace/registration/password_change.html"),
          name="password_change"),
-    path("password_change/done/", PasswordChangeDoneView.as_view(template_name="eduspace/password_changed.html"),
+    path("password_change/done/", PasswordChangeDoneView.as_view(
+        template_name="eduspace/registration/password_changed.html"),
          name="password_changed"),
     path(
         "password_reset/",
         PasswordResetView.as_view(
-            template_name="eduspace/reset_password.html",
-            subject_template_name="eduspace/reset_subject.txt",
-            email_template_name="eduspace/reset_email.html",
+            template_name="eduspace/registration/reset_password.html",
+            subject_template_name="eduspace/registration/reset_subject.txt",
+            email_template_name="eduspace/registration/reset_email.html",
         ),
         name="password_reset"
     ),
@@ -37,7 +41,8 @@ urlpatterns = [
         ),
         name="password_reset_complete"
     ),
-    path("task/create/", TheoryTaskCreateView.as_view(), name='taskcreate'),
+    path("practicetask/create/", TaskCreateView.as_view(), name='taskcreate'),
     path('subject/<int:subj_id>', subject, name='subject'),
-    path('', index, name='index')
+    path('', index, name='index'),
+    path('message/del/<int:mes_id>', message_del, name="mes_del")
 ]

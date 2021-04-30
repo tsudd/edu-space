@@ -2,10 +2,10 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" content="text/html; charset=utf-8">
-        <title>{% block title %}} Main {% endblock %} - Eduspace</title>
+        <title>{% block title %} Main {% endblock %} - Eduspace</title>
     </head>
     <body>
-        <header>Edu<span><strong>space</strong></span></header>
+        {% include '../includes/nav.html' %}
         <section>
             {% block content %}
             {% endblock %}

@@ -1,16 +1,27 @@
-from django.forms import ModelForm
+from django import forms
 
-from .models import TheoryTask
 from .models import Message
+from .models import Task
 
 
-class TheoryTaskForm(ModelForm):
-    class Meta:
-        model = TheoryTask
-        fields = ('name', "subject", "description", "creation_date")
-
-
-class MessageForm(ModelForm):
+class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
         fields = ("class_receiver", "text", "type")
+
+
+class TaskForm(forms.ModelForm):
+    
+    deadline = forms.DateField(
+        widget=forms.widgets.SelectDateWidget(
+            empty_label=(
+                "Choose year",
+                "Choose month",
+                "Choose day"
+            )
+        )
+    )
+
+    class Meta:
+        model = Task
+        fields = ('name', "subject", "description", "deadline", "deadline")

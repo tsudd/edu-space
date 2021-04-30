@@ -1,17 +1,17 @@
 {% extends "eduspace/layout/create.html" %}
 
-{% block title%}
-Task creation
+{% block title %}
+Practice Task creation
 {% endblock %}
 
 {% block content %}
-<h1>Create new task</h1>
+<h1>Create new practice task</h1>
 <div>
-    <a href="{% url 'index' %}">Main</a>
+    <a href="{% url 'eduspace:index' %}">Main</a>
 </div>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    <input type="submit" value="Send">
 </form>
-<input type="submit" value="Add">
 {% endblock %}

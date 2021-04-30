@@ -1,0 +1,12 @@
+{% extends "eduspace/layout/main.html" %}
+
+{% block title %}
+{{ sel_task.name }}
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ sel_task.name }} {{ self_task.deadline}}</h1>
+<h2>{{ sel_task.description }}</h2>
+
+{% endblock %}

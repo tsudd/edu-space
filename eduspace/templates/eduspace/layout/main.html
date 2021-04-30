@@ -5,20 +5,47 @@
         <title>{% block title %} Main {% endblock %} - Eduspace</title>
     </head>
     <body>
-        <header><strong>Edu</strong><span>space</span></header>
-        <nav>
-            {% for sub in subs %}
-            <div>
-                <h2><a href="{% url 'subject' sub.pk %}">{{ sub.name }}</a></h2>
-                <p>{{ sub.description }}</p>
-            </div>
-            {% endfor %}
-            <a href="{% url 'taskcreate' %}">Create task</a>
-            <a href="{% url 'messagecreate' %}">Send message</a>
-        </nav>
-        <section>
-            {% block content %}
-            {% endblock %}
-        </section>
+        {% include "../includes/nav.html" %}
+        <div>
+            <table>
+                <tr>
+                    <th>Subjects</th>
+                    <th>Information</th>
+                    <th>Messages</th>
+                </tr>
+                <tr>
+                    <th>
+                        <hr>
+                        {% for sub in subs %}
+                        <div>
+                            <h2><a href="{% url 'eduspace:subject' sub.pk %}">{{ sub.name }}</a></h2>
+                            <p>{{ sub.description }}</p>
+                            <hr>
+                        </div>
+                        {% endfor %}
+                    </th>
+                    <th>
+                        <section>
+                            {% block content %}
+                            {% endblock %}
+                        </section>
+                    </th>
+                    <th>
+                        <hr>
+                        {% for mes in messages %}
+                        <div>
+                            <strong>{{ mes.type }}</strong>
+                            <h4>{{ mes.text }}</h4>
+                            <p>By {{ mes.teacher.surname }} {{ mes.creation_datetime }}</p>
+                            {% if user.is_staff %}
+                            <a href="{% url 'eduspace:mes_del' mes.pk %}">Del</a>
+                            {% endif %}
+                            <hr>
+                        </div>
+                        {% endfor %}
+                    </th>
+                </tr>
+            </table>
+        </div>
     </body>
 </html>
