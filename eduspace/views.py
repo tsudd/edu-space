@@ -6,14 +6,17 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.template import loader
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
+from rest_framework import viewsets
+from rest_framework import permissions
 
-from .models import Subject, Student, Teacher, Class
+from .models import Subject, Student, Teacher, Class, Account
 from .models import Message
 from .models import Task
 from .forms import MessageForm
 from .forms import TaskForm
 
 # Create your views here.
+from .serializers import AccountSerializer
 
 
 class MessageCreateView(UserPassesTestMixin, CreateView):
@@ -43,6 +46,15 @@ class TaskCreateView(UserPassesTestMixin, CreateView):
 
     def test_func(self):
         return self.request.user.is_staff
+
+
+class AccountViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows accounts to be viewed or edited.
+    """
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 @login_required

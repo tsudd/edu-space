@@ -1,14 +1,20 @@
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, \
     PasswordResetView, PasswordResetConfirmView, PasswordResetCompleteView
 
 from .views import index, subject, task, message_del
-from .views import MessageCreateView
-from .views import TaskCreateView
+from .views import MessageCreateView, TaskCreateView
+from .views import AccountViewSet
+
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'accounts', AccountViewSet)
 
 app_name = 'eduspace'
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('task/<int:task_id>', task, name='task'),
     path("message/create/", MessageCreateView.as_view(), name="messagecreate"),
     path("login/", LoginView.as_view(template_name="eduspace/registration/login.html"), name="login"),

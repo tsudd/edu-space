@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'frontend',
     'eduspace.apps.EduSpaceConfig'
 ]
 
@@ -124,3 +126,8 @@ LOGIN_REDIRECT_URL = '/eduspace/'
 LOGOUT_REDIRECT_URL = '/eduspace/login/'
 
 AUTH_USER_MODEL = 'eduspace.Account'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+}
