@@ -1,50 +1,73 @@
 from rest_framework import serializers
-from .models import Student, Teacher, Class, Message, Subject, Task, Account
+from .models import Student, Teacher, Class, Message, Subject, Task, Account, TeacherStatus
 from django.contrib.auth import authenticate
 
 
-class StudentSerializer(serializers.HyperlinkedModelSerializer):
+class AccountSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Student
-        fields = ["user", "stud_class"]
+        model = Account
+        fields = ["username", "name", "surname", "birthDate", "email"]
 
 
-class TeacherSerializer(serializers.HyperlinkedModelSerializer):
+class TeacherStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeacherStatus
+        fields = '__all__'
+
+
+class TeacherSerializer(serializers.ModelSerializer):
+    status_set = serializers.PrimaryKeyRelatedField(
+        source="status", read_only=True)
+
     class Meta:
         model = Teacher
-        fields = ["user", "status"]
+        fields = ["user", "status_set"]
 
 
-class ClassSerializer(serializers.HyperlinkedModelSerializer):
+class ClassSerializer(serializers.ModelSerializer):
+    curator = TeacherSerializer(read_only=True)
+
     class Meta:
         model = Class
         fields = ["curator", "number", "letter"]
 
 
-class MessageSerializer(serializers.HyperlinkedModelSerializer):
+class StudentSerializer(serializers.ModelSerializer):
+    user = AccountSerializer(read_only=True)
+    stud_class = ClassSerializer(read_only=True)
+
+    class Meta:
+        model = Student
+        fields = ["user", "stud_class"]
+
+
+class MessageSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Message
-        fields = ["class_receiver", "text", "creation_datetime", "type", "sender"]
+        fields = ["class_receiver", "text",
+                  "creation_datetime", "type", "sender"]
 
 
-class SubjectSerializer(serializers.HyperlinkedModelSerializer):
+class SubjectSerializer(serializers.ModelSerializer):
+    teacher = TeacherSerializer(read_only=True)
+    stud_class = ClassSerializer(read_only=True)
+
     class Meta:
         model = Subject
-        fields = ["name", "teacher", "description", "information", "stud_class"]
+        fields = ["id", "name", "teacher", "description",
+                  "information", "stud_class"]
 
 
-class TaskSerializer(serializers.HyperlinkedModelSerializer):
+class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ["name", "subject", "description", "creation_date", "deadline"]
-
-
-class AccountSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Account
-        fields = ["username", "name", "surname", "birthDate", "email"]
+        fields = ["name", "subject", "description",
+                  "creation_date", "deadline"]
 
 # Loging serializer
+
+
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
@@ -54,4 +77,3 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Incorrect Creadentials.")
-

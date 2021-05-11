@@ -4,12 +4,8 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView,
 from knox import views as knox_views
 # from .views import index, subject, task, message_del
 # from .views import MessageCreateView, TaskCreateView
-from .api import AccountViewSet, LoginAPI, AccountAPI, SubjectsAPI
+from .api import AccountViewSet, LoginAPI, AccountAPI, SubjectList, SubjectDetail, TaskList, TaskDetail
 
-from rest_framework import routers
-
-router = routers.DefaultRouter()
-router.register(r'accounts', AccountViewSet)
 
 app_name = 'eduspace'
 
@@ -17,8 +13,15 @@ urlpatterns = [
     path('api/auth', include('knox.urls')),
     path('api/auth/login', LoginAPI.as_view()),
     path('api/auth/account', AccountAPI.as_view()),
-    path('api/subjects', SubjectsAPI.as_view()),
-    path('api/auth/logout', knox_views.LogoutView.as_view(), name='knox_logout')
+    path('api/auth/logout', knox_views.LogoutView.as_view(), name='knox_logout'),
+    path('api/subjects', SubjectList.as_view(), name="subjects"),
+    path('api/subjects/<int:pk>', SubjectDetail.as_view(), name="subject-detail"),
+    path('api/tasks', TaskList.as_view(), name="tasks"),
+    path('api/tasks/<int:pk>', TaskDetail.as_view(), name="task-detail"),
+    # path('api/subjects/<int:subject_id>',
+    #      SubjectDetail.as_view(), name="subject-detail"),
+    # path('api/auth/teacher/<int:teacher_id>'),
+    # path('api/subjects', SubjectsAPI.as_view(), name="subjects"),
     # path('', include(router.urls)),
     # path('task/<int:task_id>', task, name='task'),
     # path("message/create/", MessageCreateView.as_view(), name="messagecreate"),

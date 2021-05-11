@@ -35,18 +35,23 @@ class CustomAccountManager(BaseUserManager):
 
 
 class Account(AbstractBaseUser):
-    email = models.EmailField(verbose_name='email', max_length=254, unique=True)
+    email = models.EmailField(verbose_name='email',
+                              max_length=254, unique=True)
     username = models.CharField(max_length=30, unique=True)
-    date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
+    date_joined = models.DateTimeField(
+        verbose_name='date joined', auto_now_add=True)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
-    name = models.CharField("Name", max_length=30, default='UNNAMED USER', blank=True)
-    surname = models.CharField("Surname", max_length=30, default='', blank=True)
-    birthDate = models.DateField(verbose_name="birth date", null=True, blank=True)
+    name = models.CharField("Name", max_length=30,
+                            default='UNNAMED USER', blank=True)
+    surname = models.CharField(
+        "Surname", max_length=30, default='', blank=True)
+    birthDate = models.DateField(
+        verbose_name="birth date", null=True, blank=True)
     name1 = models.CharField(max_length=30, default='', blank=True)
 
     USERNAME_FIELD = 'username'
@@ -74,14 +79,16 @@ class TeacherStatus(models.Model):
 
 class Teacher(models.Model):
     user = models.OneToOneField(Account, on_delete=models.CASCADE)
-    status = models.ForeignKey(TeacherStatus, on_delete=models.CASCADE, default=None, null=True, blank=True)
+    status = models.ForeignKey(
+        TeacherStatus, on_delete=models.CASCADE, default=None, null=True, blank=True)
 
     def __str__(self):
         return self.user.name + ' ' + self.user.surname
 
 
 class Class(models.Model):
-    curator = models.ForeignKey(Teacher, on_delete=models.CASCADE, default=None)
+    curator = models.ForeignKey(
+        Teacher, on_delete=models.CASCADE, default=None)
     number = models.IntegerField("Class number", default=-1)
     letter = models.CharField("Class letter", max_length=1)
 
@@ -91,7 +98,8 @@ class Class(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(Account, on_delete=models.CASCADE)
-    stud_class = models.ForeignKey(Class, on_delete=models.CASCADE, default=None)
+    stud_class = models.ForeignKey(
+        Class, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
         return self.user.email
@@ -99,10 +107,12 @@ class Student(models.Model):
 
 class Subject(models.Model):
     name = models.CharField("Name", max_length=30)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, default=None)
+    teacher = models.ForeignKey(
+        Teacher, on_delete=models.CASCADE, default=None, related_name='curator')
     description = models.CharField("Description", max_length=60)
     information = models.TextField(null=True, blank=True)
-    stud_class = models.ForeignKey(Class, on_delete=models.CASCADE, default=None)
+    stud_class = models.ForeignKey(
+        Class, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
         return f"Subject {self.name} in {self.stud_class}"
@@ -110,7 +120,8 @@ class Subject(models.Model):
 
 class Task(models.Model):
     name = models.CharField("Name", max_length=30)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, default=None)
+    subject = models.ForeignKey(
+        Subject, on_delete=models.CASCADE, default=None)
     description = models.TextField("Description", max_length=250)
     creation_date = models.DateField('Creation date', auto_now_add=True)
     deadline = models.DateField("Deadline", null=True, blank=True)
@@ -128,11 +139,15 @@ class MessageType(models.Model):
 
 
 class Message(models.Model):
-    class_receiver = models.ForeignKey(Class, on_delete=models.CASCADE, default=None)
+    class_receiver = models.ForeignKey(
+        Class, on_delete=models.CASCADE, default=None)
     text = models.TextField(null=True, blank=True)
-    creation_datetime = models.DateTimeField('Creation datetime', auto_now_add=True)
-    type = models.ForeignKey(MessageType, on_delete=models.CASCADE, default=None, null=True, blank=True)
-    sender = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True, blank=True)
+    creation_datetime = models.DateTimeField(
+        'Creation datetime', auto_now_add=True)
+    type = models.ForeignKey(
+        MessageType, on_delete=models.CASCADE, default=None, null=True, blank=True)
+    sender = models.ForeignKey(
+        Teacher, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"Message for {self.class_receiver} from {self.creation_datetime} of {self.type}"
