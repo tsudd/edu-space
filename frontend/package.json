@@ -5,8 +5,8 @@
   "main": "main",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --mode development --watch ./src/index.js --output-path ./static/frontend/",
-    "build": "webpack --mode production ./src/index.js --output-path ./static/frontend/"
+    "dev": "webpack --mode development --watch ./src/index.js",
+    "build": "webpack --mode production ./src/index.js"
   },
   "keywords": [],
   "author": "Alexander Khrystsenka",
@@ -25,7 +25,9 @@
     "webpack-cli": "^4.6.0"
   },
   "dependencies": {
+    "babel-plugin-webpack-alias": "^2.1.2",
     "bootstrap": "^4.6.0",
+    "core-js": "^2.6.12",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-react": "^7.23.2",
     "react-router-dom": "^5.2.0",

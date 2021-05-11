@@ -1,4 +1,9 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import {
+  ACCESS_TOKEN_NAME,
+  API_AUTH_ACCOUNT,
+  API_BASE_URL,
+} from '../constants/urls'
 
 const AuthContext = React.createContext({
   auth: null,
@@ -17,12 +22,36 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(
-    window.isAuthificated === 'False' ? false : true
+    localStorage.getItem(ACCESS_TOKEN_NAME) ? true : false
   )
-
-  const [token, setToken] = useState(null)
-
+  const [token, setToken] = useState(localStorage.getItem(ACCESS_TOKEN_NAME))
   const [user, setUser] = useState(null)
+
+  // if (auth) {
+  //   useEffect(() => {
+  //     const getUser = async () => {
+  //       try {
+  //         const resp = await fetch(API_BASE_URL + API_AUTH_ACCOUNT, {
+  //           method: 'GET',
+  //           headers: {
+  //             Authorization: ACCESS_TOKEN_NAME + ' ' + token,
+  //           },
+  //         })
+  //         const json = await resp.json()
+  //         console.log
+  //         if (resp.ok && json.token) {
+  //           setUser(json.account)
+  //           setToken(json.token)
+  //           console.log(user)
+  //         }
+  //       } catch (e) {
+  //         console.error(e)
+  //       }
+  //     }
+  //     void getUser()
+  //   }, [setUser])
+  // }
+  // console.log(user)
 
   return (
     <AuthContext.Provider

@@ -3,8 +3,6 @@ import React, { useState, useEffect } from 'react'
 export const AccountsList = () => {
   const [accounts, setAccounts] = useState()
 
-  console.log(228)
-
   useEffect(() => {
     const getAccounts = async () => {
       const response = await fetch('api/accounts')

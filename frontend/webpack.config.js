@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   module: {
     rules: [
@@ -9,5 +11,10 @@ module.exports = {
         },
       },
     ],
+  },
+  output: {
+    filename: '[name].[contenthash].js',
+    path: path.resolve(__dirname, 'static/frontend'),
+    clean: true,
   },
 }

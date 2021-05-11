@@ -1,35 +1,27 @@
-import React, { useState } from 'react'
-import { useAuth } from './providers'
-import { Route, BrowserRouter, Switch, useHistory } from 'react-router-dom'
+import React from 'react'
+import { Route, BrowserRouter, Switch } from 'react-router-dom'
 import { PrivateRoute } from './common/PrivateRoute'
-import { Login } from './auth/Login'
-import { Header } from './components/Header'
-import { AlertComponent } from './components/AlertComponent'
-import { Main } from './components/Main'
+import { Meeting } from './components/Meeting'
+import { PageLayout } from './layouts'
+import { Login } from './modules/auth/Login'
+import { Tasks } from './modules/tasks/Tasks'
 
 export const App = () => {
-  const { auth, token, user } = useAuth()
-
-  let history = useHistory()
-  const [errorMessage, updateErrorMessage] = useState(null)
-
   return (
-    <div>
+    <>
       <BrowserRouter>
-        <Header />
         <Switch>
           <Route path="/login">
-            <Login showError={updateErrorMessage} />
+            <Login />
           </Route>
           <PrivateRoute path="/">
-            <Main />
+            <Meeting></Meeting>
+          </PrivateRoute>
+          <PrivateRoute path="/subject/:id">
+            <Tasks />
           </PrivateRoute>
         </Switch>
       </BrowserRouter>
-      <AlertComponent
-        errorMessage={errorMessage}
-        hideError={updateErrorMessage}
-      />
-    </div>
+    </>
   )
 }

@@ -1,23 +1,31 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Col, Container, Row } from 'reactstrap'
-import { ACCESS_TOKEN_NAME, API_BASE_URL } from '../constants/urls'
+import {
+  ACCESS_TOKEN_NAME,
+  API_AUTH_ACCOUNT,
+  API_BASE_URL,
+  API_SUBJECTS,
+} from '../constants/urls'
+import { PageLayout } from '../layouts/PageLayout'
+import { useAuth } from '../providers'
 
 export const Main = () => {
-  const history = useHistory()
+  let history = useHistory()
 
   const redirectToLogin = () => {
     history.push('/login')
   }
 
+  const { token } = useAuth()
+
   useEffect(() => {
     const getUser = async () => {
       try {
-        const resp = await fetch(API_BASE_URL + 'auth/account', {
+        const resp = await fetch(API_BASE_URL + API_AUTH_ACCOUNT, {
           method: 'GET',
           headers: {
-            Authorization:
-              ACCESS_TOKEN_NAME + ' ' + localStorage.getItem(ACCESS_TOKEN_NAME),
+            Authorization: ACCESS_TOKEN_NAME + ' ' + token,
           },
         })
         if (!resp.ok) {
@@ -31,12 +39,10 @@ export const Main = () => {
   })
 
   return (
-    <Container className="mt-5">
-      <Row>
-        <Col></Col>
-        <Col></Col>
-        <Col></Col>
-      </Row>
-    </Container>
+    <PageLayout>
+      <Container className="mt-5">
+        <h1>Main</h1>
+      </Container>
+    </PageLayout>
   )
 }
