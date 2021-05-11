@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import {Switch, Route, Redirect} from "react-router-dom";
-import Navigator from './NavComponent';
+import Header from './Header/Header';
 
 
 function Main(props) {
   return (
     <div>
-      <Navigator />
-      <Switch>
-          
-        <Route path='/subject/:subId' />
-        <Route path='/'
-      </Switch>
+      <Header />
     </div>
   )
 }

@@ -1,10 +1,12 @@
-import React from "react"
-import App from "./App"
-import ReactDOM from "react-dom"
+import React from 'react'
+// import { Router } from './Router'
+import { Providers } from './providers'
+import ReactDOM from 'react-dom'
+import { App } from './App'
 
 ReactDOM.render(
-  <React.StrictMode>
-      <App />
-  </React.StrictMode>,
+  <Providers>
+    <App />
+  </Providers>,
   document.getElementById('root')
-);
+)

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Student, Teacher, Class, Message, Subject, Task, Account
+from django.contrib.auth import authenticate
 
 
 class StudentSerializer(serializers.HyperlinkedModelSerializer):
@@ -42,3 +43,15 @@ class AccountSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Account
         fields = ["username", "name", "surname", "birthDate", "email"]
+
+# Loging serializer
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        user = authenticate(**data)
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError("Incorrect Creadentials.")
+

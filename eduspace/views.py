@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponse
@@ -59,7 +59,7 @@ class AccountViewSet(viewsets.ModelViewSet):
 
 @login_required
 def index(req):
-    template = loader.get_template("eduspace/index.html")
+    template = loader.get_template("eduspace/ind.html")
     context = _get_messages_and_subjects(req)
     # for message in messages:
     #     message.__setattr__("teacher", Teacher.objects.get(pk=message.sender))
