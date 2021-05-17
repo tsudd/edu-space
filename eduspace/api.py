@@ -5,7 +5,18 @@ from rest_framework.views import APIView
 from .serializers import LoginSerializer, AccountSerializer, SubjectSerializer, TaskSerializer, TeacherSerializer
 from rest_framework import status
 
-from .models import Account, Subject, Teacher, Task
+from .models import Account, Student, Subject, Teacher, Task
+
+
+def get_student_or_teacher(user):
+    if user.is_admin:
+        return
+    try:
+        if user.is_staff:
+            return Teacher.objects.get(user__id=user.id)
+        return Student.objects.get(user__id=user.id)
+    except:
+        return None
 
 
 class AccountViewSet(viewsets.ModelViewSet):
@@ -29,8 +40,6 @@ class LoginAPI(generics.GenericAPIView):
             "account": AccountSerializer(account, context=self.get_serializer_context()).data,
             "token": token
         })
-
-# Get Account API
 
 
 class AccountAPI(generics.RetrieveAPIView):
@@ -62,6 +71,9 @@ class SubjectList(generics.ListAPIView):
         params = dict(request.query_params)
         if request.user.is_admin:
             subjects = list(Subject.objects.all().select_related())
+        elif request.user.is_staff:
+            teacher = get_student_or_teacher(request.user)
+            subjects = list(Subject.objects.filter(teacher=teacher.id))
         elif len(params) > 0:
             if 'id' in params:
                 pk = int(params['id'][0])
@@ -72,8 +84,12 @@ class SubjectList(generics.ListAPIView):
             else:
                 return Response(status=status.HTTP_204_NO_CONTENT)
         else:
-            subjects = list(Subject.objects.filter(
-                stud_class=request.user.id).select_related())
+            stud = get_student_or_teacher(request.user)
+            if stud is not None:
+                subjects = list(Subject.objects.filter(
+                    stud_class__id=stud.stud_class.id).select_related())
+            else:
+                return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({
             "subjects": self.serializer_class(subjects, many=True, context=self.get_serializer_context()).data
         })
@@ -89,18 +105,24 @@ class SubjectDetail(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         params = kwargs
-        subject = Subject.objects.get(pk=params['pk'])
         try:
+            subject = Subject.objects.get(pk=params['pk'])
+            if request.user.is_staff:
+                teacher = get_student_or_teacher(request.user)
+                assert teacher is not None and subject.teacher.id == teacher.id
+            if not request.user.is_staff:
+                student = get_student_or_teacher(request.user)
+                assert student is not None and subject.stud_class.id == student.stud_class.id
             tasks = list(Task.objects.filter(subject=params['pk']))
         except:
-            return
+            return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({
             "subject": self.nice_serializer(subject, context=self.get_serializer_context()).data,
             "tasks": self.serializer_class(tasks, many=True, context=self.get_serializer_context()).data
         })
 
 
-class TaskList(generics.ListAPIView):
+class TaskList(generics.ListCreateAPIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
@@ -117,6 +139,12 @@ class TaskList(generics.ListAPIView):
             "tasks": self.serializer_class(tasks, many=True, context=self.get_serializer_context()).data
         })
 
+    # make staff checker decorator
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return super().post(request, args, kwargs)
+
 
 class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [
@@ -124,3 +152,13 @@ class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
     ]
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
+
+    def put(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return super().put(request, args, kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return super().delete(request, args, kwargs)

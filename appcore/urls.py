@@ -18,8 +18,8 @@ from django.urls import path, include
 
 urlpatterns = [
     # path('', include('eduspace.urls', namespace='')),
+    path('admin/', admin.site.urls),
     path('', include('frontend.urls')),
     # path('gavno/', include('frontend.urls')),
     path('', include('eduspace.urls', namespace='eduspace')),
-    path('admin/', admin.site.urls),
 ]

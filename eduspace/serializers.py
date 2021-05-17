@@ -6,7 +6,8 @@ from django.contrib.auth import authenticate
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ["username", "name", "surname", "birthDate", "email"]
+        fields = ["username", "name", "surname",
+                  "birthDate", "email", "is_staff"]
 
 
 class TeacherStatusSerializer(serializers.ModelSerializer):
@@ -62,7 +63,7 @@ class SubjectSerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ["name", "subject", "description",
+        fields = ["id", "name", "subject", "description",
                   "creation_date", "deadline"]
 
 # Loging serializer
