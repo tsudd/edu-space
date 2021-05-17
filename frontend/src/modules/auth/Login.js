@@ -19,7 +19,7 @@ import { PageLayout } from '../../layouts'
 export const Login = (props) => {
   let history = useHistory()
 
-  const { setToken, setUser, setAuth } = useAuth()
+  const { setAuth, setUser, setToken } = useAuth()
 
   const { showError } = useLogger()
 
@@ -56,12 +56,10 @@ export const Login = (props) => {
         }
         const json = await reps.json()
         if (json.token) {
-          console.log('Succesful loging with token ', json.token)
           localStorage.setItem(ACCESS_TOKEN_NAME, json.token)
-          setToken(json.token)
-          setUser(json.account)
-          console.log(json.account)
           setAuth(true)
+          setUser(json.account)
+          setToken(json.token)
           redirectToHome()
         } else {
           showError('Please enter valid username and password')
@@ -106,7 +104,7 @@ export const Login = (props) => {
                 <Label for="password">Password</Label>
                 <Input
                   type="password"
-                  name="password"
+                  name="pass"
                   id="password"
                   placeholder="Enter password"
                   value={state.password}

@@ -1,16 +1,20 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Nav, Navbar, NavbarBrand, NavItem } from 'reactstrap'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useAuth } from '../../providers'
-import { ACCESS_TOKEN_NAME } from '../../constants/urls'
+import { ACCESS_TOKEN_NAME, TASK_CREATION_URL } from '../../constants/urls'
 
 export const Header = (props) => {
-  const { auth, setAuth } = useAuth()
+  const { auth, setAuth, user, setUser, setToken } = useAuth()
   let logout
+  let history = useHistory()
+  let staff_links
 
   const handleLogout = () => {
     localStorage.removeItem(ACCESS_TOKEN_NAME)
     setAuth(false)
+    setUser(null)
+    setToken(null)
   }
 
   if (auth) {
@@ -22,15 +26,25 @@ export const Header = (props) => {
       </NavItem>
     )
   }
+  if (auth && user && user.is_staff) {
+    staff_links = (
+      <NavItem>
+        <Link to={TASK_CREATION_URL}>Create task</Link>
+      </NavItem>
+    )
+  }
 
   return (
     <div>
       <Navbar color="light" light expand="md">
         <div className="container">
-          <NavbarBrand className="mr-auto" href="/">
+          <Link className="mr-auto navbar-brand" to="/">
             Edu<strong>Space</strong>
-          </NavbarBrand>
-          <Nav navbar>{logout}</Nav>
+          </Link>
+          <Nav navbar>
+            {logout}
+            {staff_links}
+          </Nav>
         </div>
       </Navbar>
     </div>

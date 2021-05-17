@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { ACCESS_TOKEN_NAME } from '../constants/urls'
 import { useAuth } from '../providers'
 
 export const PrivateRoute = ({ children, ...props }) => {

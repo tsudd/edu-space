@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import {
   ACCESS_TOKEN_NAME,
+  ACCESS_USER,
   API_AUTH_ACCOUNT,
   API_BASE_URL,
 } from '../constants/urls'
@@ -27,31 +28,30 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem(ACCESS_TOKEN_NAME))
   const [user, setUser] = useState(null)
 
-  // if (auth) {
-  //   useEffect(() => {
-  //     const getUser = async () => {
-  //       try {
-  //         const resp = await fetch(API_BASE_URL + API_AUTH_ACCOUNT, {
-  //           method: 'GET',
-  //           headers: {
-  //             Authorization: ACCESS_TOKEN_NAME + ' ' + token,
-  //           },
-  //         })
-  //         const json = await resp.json()
-  //         console.log
-  //         if (resp.ok && json.token) {
-  //           setUser(json.account)
-  //           setToken(json.token)
-  //           console.log(user)
-  //         }
-  //       } catch (e) {
-  //         console.error(e)
-  //       }
-  //     }
-  //     void getUser()
-  //   }, [setUser])
-  // }
-  // console.log(user)
+  useEffect(() => {
+    if (!token) return
+    const getUser = async () => {
+      try {
+        const resp = await fetch(API_BASE_URL + API_AUTH_ACCOUNT, {
+          method: 'GET',
+          headers: {
+            Authorization: ACCESS_TOKEN_NAME + ' ' + token,
+          },
+        })
+        const json = await resp.json()
+        if (resp.ok) {
+          setUser(json)
+          setAuth(true)
+        } else {
+          setUser(null)
+          setAuth(false)
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    void getUser()
+  }, [setUser, token, setAuth])
 
   return (
     <AuthContext.Provider

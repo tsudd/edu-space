@@ -1,36 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { CardBody, CardTitle, Container, Card, CardSubtitle } from 'reactstrap'
-import {
-  ACCESS_TOKEN_NAME,
-  API_BASE_URL,
-  API_SUBJECTS,
-} from '../../constants/urls'
+import { useSubjects } from '../../providers/SubjectsProvider'
 
-import { useAuth } from '../../providers'
-
-export const SubjectList = (props) => {
-  const [subjects, setSubjects] = useState(null)
-  const { token } = useAuth()
-  useEffect(() => {
-    const getSubjects = async () => {
-      try {
-        const resp = await fetch(API_BASE_URL + API_SUBJECTS, {
-          methdo: 'GET',
-          headers: {
-            Authorization: ACCESS_TOKEN_NAME + ' ' + token,
-          },
-        })
-        if (resp.ok) {
-          const json = await resp.json()
-          setSubjects(json.subjects)
-        }
-      } catch (e) {
-        console.error(e)
-      }
-    }
-    void getSubjects()
-  }, [setSubjects])
+export const SubjectList = () => {
+  const { subjects } = useSubjects()
 
   return (
     <Container fluid="md">
