@@ -38,7 +38,7 @@ export const TaskUpdateForm = (props) => {
     }
   }
   return (
-    <PageLayout showSubjectList={false}>
+    <PageLayout showSubjectList={false} showMessages={false}>
       <TaskForm
         submitFunc={onSubmit}
         formTitle={`Update form`}

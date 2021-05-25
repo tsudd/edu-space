@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+import datetime
 
 # Create your models here.
 
@@ -143,7 +144,7 @@ class Message(models.Model):
         Class, on_delete=models.CASCADE, default=None)
     text = models.TextField(null=True, blank=True)
     creation_datetime = models.DateTimeField(
-        'Creation datetime', auto_now_add=True)
+        'Creation datetime', auto_now_add=True, null=True, blank=True)
     type = models.ForeignKey(
         MessageType, on_delete=models.CASCADE, default=None, null=True, blank=True)
     sender = models.ForeignKey(

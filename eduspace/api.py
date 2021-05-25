@@ -2,7 +2,7 @@ from rest_framework import generics, permissions, viewsets
 from rest_framework.response import Response
 from knox.models import AuthToken
 from rest_framework.views import APIView
-from .serializers import LoginSerializer, AccountSerializer, SubjectSerializer, TaskSerializer, TeacherSerializer
+from .serializers import *
 from rest_framework import status
 
 from .models import Account, Student, Subject, Teacher, Task
@@ -162,3 +162,53 @@ class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
         if not request.user.is_staff:
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         return super().delete(request, args, kwargs)
+
+
+class MessageList(generics.ListCreateAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class = MessageSerializer
+    queryset = Message.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        messages = []
+        if request.user.is_staff:
+            teacher = get_student_or_teacher(request.user)
+            messages += list(Message.objects.filter(sender__id=teacher.id).select_related())
+            classes = list(Class.objects.filter(curator__id=teacher.id))
+            for c in classes:
+                messages += list(Message.objects.filter(
+                    class_receiver__id=c.id).select_related())
+        else:
+            student = get_student_or_teacher(request.user)
+            messages += list(Message.objects.filter(
+                class_receiver__id=student.stud_class.id).select_related())
+
+        return Response({
+            "messages": self.serializer_class(messages, many=True, context=self.get_serializer_context()).data,
+        })
+
+
+class MessageDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class = MessageSerializerNew
+    queryset = Message.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        messages = []
+        if request.user.is_admin:
+            messages = list(Message.objects.all().select_related())
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({
+            "tasks": self.serializer_class(messages, many=True, context=self.get_serializer_context()).data
+        })
+
+    # make staff checker decorator
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return super().post(request, args, kwargs)

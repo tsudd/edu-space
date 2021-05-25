@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Student, Teacher, Class, Message, Subject, Task, Account, TeacherStatus
+from .models import MessageType, Student, Teacher, Class, Message, Subject, Task, Account, TeacherStatus
 from django.contrib.auth import authenticate
 
 
@@ -17,12 +17,12 @@ class TeacherStatusSerializer(serializers.ModelSerializer):
 
 
 class TeacherSerializer(serializers.ModelSerializer):
-    status_set = serializers.PrimaryKeyRelatedField(
-        source="status", read_only=True)
+    user = AccountSerializer(read_only=True)
+    status = TeacherStatusSerializer(read_only=True)
 
     class Meta:
         model = Teacher
-        fields = ["user", "status_set"]
+        fields = ["id", "user", "status"]
 
 
 class ClassSerializer(serializers.ModelSerializer):
@@ -30,7 +30,13 @@ class ClassSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Class
-        fields = ["curator", "number", "letter"]
+        fields = "__all__"
+
+
+class MessageTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MessageType
+        fields = '__all__'
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -43,10 +49,23 @@ class StudentSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    class_receiver = ClassSerializer(read_only=True)
+    sender = TeacherSerializer(read_only=True)
+    creation_datetime = serializers.DateTimeField(format='%d.%m.%Y %H:%M')
+    # type_ = MessageType
 
     class Meta:
         model = Message
-        fields = ["class_receiver", "text",
+        fields = ["id", "class_receiver", "text",
+                  "creation_datetime", "type", "sender"]
+
+
+class MessageSerializerNew(serializers.ModelSerializer):
+    # type_ = MessageType
+
+    class Meta:
+        model = Message
+        fields = ["id", "class_receiver", "text",
                   "creation_datetime", "type", "sender"]
 
 

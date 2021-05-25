@@ -33,7 +33,7 @@ export const TaskCreationForm = (props) => {
     }
   }
   return (
-    <PageLayout showSubjectList={false}>
+    <PageLayout showSubjectList={false} showMessages={false}>
       <TaskForm submitFunc={onSubmit} />
     </PageLayout>
   )

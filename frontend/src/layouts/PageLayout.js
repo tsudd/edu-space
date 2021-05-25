@@ -1,8 +1,13 @@
 import React from 'react'
 import { Col, Container, Row } from 'reactstrap'
 import { Header, SubjectList } from './components'
+import { MessageList } from './components/MessageList'
 
-export const PageLayout = ({ children, showSubjectList = true }) => {
+export const PageLayout = ({
+  children,
+  showSubjectList = true,
+  showMessages = true,
+}) => {
   return (
     <>
       <Header />
@@ -14,6 +19,11 @@ export const PageLayout = ({ children, showSubjectList = true }) => {
             </Col>
           )}
           <Col>{children}</Col>
+          {showMessages && (
+            <Col md="3">
+              <MessageList />
+            </Col>
+          )}
         </Row>
       </Container>
     </>

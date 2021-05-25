@@ -83,7 +83,7 @@ export const Login = (props) => {
 
   return (
     // <div className="col-md-6 mx-auto mt-5">
-    <PageLayout showSubjectList={false}>
+    <PageLayout showSubjectList={false} showMessages={false}>
       <Col md="4" className="mx-auto mt-5">
         <Card>
           <CardBody>

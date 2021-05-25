@@ -65,8 +65,7 @@ export const TaskForm = ({
               handleBlur,
             }) => (
               <Form onSubmit={(e) => e.preventDefault()}>
-                <FormGroup>
-                  {console.log(values)}
+                <FormGroup> 
                   <Label for="name">Task name</Label>
                   <Input
                     type="text"

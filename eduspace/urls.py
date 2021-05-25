@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView,
 from knox import views as knox_views
 # from .views import index, subject, task, message_del
 # from .views import MessageCreateView, TaskCreateView
-from .api import AccountViewSet, LoginAPI, AccountAPI, SubjectList, SubjectDetail, TaskList, TaskDetail
+from .api import AccountViewSet, LoginAPI, MessageDetail, MessageList, AccountAPI, MessageList, SubjectList, SubjectDetail, TaskList, TaskDetail
 
 
 app_name = 'eduspace'
@@ -18,6 +18,8 @@ urlpatterns = [
     path('api/subjects/<int:pk>', SubjectDetail.as_view(), name="subject-detail"),
     path('api/tasks', TaskList.as_view(), name="tasks"),
     path('api/tasks/<int:pk>', TaskDetail.as_view(), name="task-detail"),
+    path('api/messages', MessageList.as_view(), name="messages"),
+    path('api/messages/<int:pk>', MessageDetail.as_view(), name="message-detail")
     # path('api/subjects/<int:subject_id>',
     #      SubjectDetail.as_view(), name="subject-detail"),
     # path('api/auth/teacher/<int:teacher_id>'),
