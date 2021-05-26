@@ -141,7 +141,7 @@ class MessageType(models.Model):
 
 class Message(models.Model):
     class_receiver = models.ForeignKey(
-        Class, on_delete=models.CASCADE, default=None)
+        Class, on_delete=models.CASCADE, default=None, null=True, blank=True)
     text = models.TextField(null=True, blank=True)
     creation_datetime = models.DateTimeField(
         'Creation datetime', auto_now_add=True, null=True, blank=True)

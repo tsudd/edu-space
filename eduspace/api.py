@@ -1,3 +1,4 @@
+from eduspace.decorators import WrappedApiView, logged_staff
 from rest_framework import generics, permissions, viewsets
 from rest_framework.response import Response
 from knox.models import AuthToken
@@ -132,32 +133,20 @@ class TaskList(generics.ListCreateAPIView):
             "tasks": self.serializer_class(tasks, many=True, context=self.get_serializer_context()).data
         })
 
-    # make staff checker decorator
+    @logged_staff
     def post(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         return super().post(request, args, kwargs)
 
 
-class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
+class TaskDetail(WrappedApiView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
 
-    def put(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        return super().put(request, args, kwargs)
 
-    def delete(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        return super().delete(request, args, kwargs)
-
-
-class MessageList(generics.ListCreateAPIView):
+class MessageList(generics.GenericAPIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
@@ -181,15 +170,23 @@ class MessageList(generics.ListCreateAPIView):
                 class_receiver__id=student.stud_class.id).select_related())
 
         return Response({
-            "messages": self.serializer_class(messages, many=True, context=self.get_serializer_context()).data,
+            "messages": MessageSerializer(messages, many=True, context=self.get_serializer_context()).data,
         })
 
+    @logged_staff
+    def post(self, request, *args, **kwargs):
+        request.data["class_receiver"] = Class.objects.get(
+            pk=request.data["class_receiver"])
+        message = Message(**request.data)
+        message.save()
+        return Response(MessageSerializerNew(message, context=self.get_serializer_context()).data)
 
-class MessageDetail(generics.RetrieveUpdateDestroyAPIView):
+
+class MessageDetail(WrappedApiView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
-    serializer_class = MessageSerializerNew
+    serializer_class = MessageSerializer
     queryset = Message.objects.all()
 
     def get(self, request, *args, **kwargs):
@@ -201,9 +198,3 @@ class MessageDetail(generics.RetrieveUpdateDestroyAPIView):
         return Response({
             "tasks": self.serializer_class(messages, many=True, context=self.get_serializer_context()).data
         })
-
-    # make staff checker decorator
-    def post(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        return super().post(request, args, kwargs)

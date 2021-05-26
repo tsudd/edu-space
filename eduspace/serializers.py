@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import MessageType, Student, Teacher, Class, Message, Subject, Task, Account, TeacherStatus
 from django.contrib.auth import authenticate
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -61,7 +62,6 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializerNew(serializers.ModelSerializer):
-    # type_ = MessageType
 
     class Meta:
         model = Message
