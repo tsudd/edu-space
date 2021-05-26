@@ -1,22 +1,11 @@
 from rest_framework import generics, permissions, viewsets
 from rest_framework.response import Response
 from knox.models import AuthToken
-from rest_framework.views import APIView
 from .serializers import *
 from rest_framework import status
 
 from .models import Account, Student, Subject, Teacher, Task
-
-
-def get_student_or_teacher(user):
-    if user.is_admin:
-        return
-    try:
-        if user.is_staff:
-            return Teacher.objects.get(user__id=user.id)
-        return Student.objects.get(user__id=user.id)
-    except:
-        return None
+from .user_factory import UserFactory
 
 
 class AccountViewSet(viewsets.ModelViewSet):
@@ -72,7 +61,8 @@ class SubjectList(generics.ListAPIView):
         if request.user.is_admin:
             subjects = list(Subject.objects.all().select_related())
         elif request.user.is_staff:
-            teacher = get_student_or_teacher(request.user)
+            teacher = UserFactory.get_student_or_teacher(
+                request.user.id, request.user.is_staff)
             subjects = list(Subject.objects.filter(teacher=teacher.id))
         elif len(params) > 0:
             if 'id' in params:
@@ -84,7 +74,8 @@ class SubjectList(generics.ListAPIView):
             else:
                 return Response(status=status.HTTP_204_NO_CONTENT)
         else:
-            stud = get_student_or_teacher(request.user)
+            stud = UserFactory.get_student_or_teacher(
+                request.user.id, request.user.is_staff)
             if stud is not None:
                 subjects = list(Subject.objects.filter(
                     stud_class__id=stud.stud_class.id).select_related())
@@ -108,10 +99,12 @@ class SubjectDetail(generics.RetrieveAPIView):
         try:
             subject = Subject.objects.get(pk=params['pk'])
             if request.user.is_staff:
-                teacher = get_student_or_teacher(request.user)
+                teacher = UserFactory.get_student_or_teacher(
+                    request.user.id, request.user.is_staff)
                 assert teacher is not None and subject.teacher.id == teacher.id
             if not request.user.is_staff:
-                student = get_student_or_teacher(request.user)
+                student = UserFactory.get_student_or_teacher(
+                    request.user.id, request.user.is_staff)
                 assert student is not None and subject.stud_class.id == student.stud_class.id
             tasks = list(Task.objects.filter(subject=params['pk']))
         except:
@@ -174,14 +167,16 @@ class MessageList(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         messages = []
         if request.user.is_staff:
-            teacher = get_student_or_teacher(request.user)
+            teacher = UserFactory.get_student_or_teacher(
+                request.user.id, request.user.is_staff)
             messages += list(Message.objects.filter(sender__id=teacher.id).select_related())
             classes = list(Class.objects.filter(curator__id=teacher.id))
             for c in classes:
                 messages += list(Message.objects.filter(
                     class_receiver__id=c.id).select_related())
         else:
-            student = get_student_or_teacher(request.user)
+            student = UserFactory.get_student_or_teacher(
+                request.user.id, request.user.is_staff)
             messages += list(Message.objects.filter(
                 class_receiver__id=student.stud_class.id).select_related())
 
