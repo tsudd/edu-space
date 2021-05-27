@@ -12,15 +12,14 @@ def logged_staff(func):
     return wrapper
 
 
+@logged_staff
 class WrappedApiView(generics.RetrieveUpdateDestroyAPIView):
-    @logged_staff
+
     def post(self, request, *args, **kwargs):
         return super().post(request, args, kwargs)
 
-    @logged_staff
     def put(self, request, *args, **kwargs):
         return super().put(request, args, kwargs)
 
-    @logged_staff
     def delete(self, request, *args, **kwargs):
         return super().delete(request, *args, **kwargs)
